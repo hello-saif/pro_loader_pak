@@ -9,8 +9,94 @@ import 'package:flutter/material.dart';
 ///   const HomeScreen(),
 /// );
 /// ```
+///
 final class ProNavigator {
   const ProNavigator._();
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
+  static NavigatorState? get _navigator => navigatorKey.currentState;
+
+  static PageRouteBuilder<T> _route<T>({
+    required Widget page,
+    required RouteTransitionsBuilder transition,
+    Duration duration = const Duration(milliseconds: 300),
+  }) {
+    return PageRouteBuilder<T>(
+      transitionDuration: duration,
+      pageBuilder: (_, __, ___) => page,
+      transitionsBuilder: transition,
+    );
+  }
+
+  static Future<T?> fade<T>(
+    BuildContext context,
+    Widget page, {
+    Duration duration = const Duration(milliseconds: 300),
+  }) {
+    return Navigator.push(
+      context,
+      _route(
+        page: page,
+        duration: duration,
+        transition: (_, animation, __, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
+    );
+  }
+
+  static Future<T?> slideFromRight<T>(BuildContext context, Widget page) {
+    return Navigator.push(
+      context,
+      _route(
+        page: page,
+        transition: (_, animation, __, child) {
+          return SlideTransition(
+            position: Tween(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+
+  static Future<T?> scale<T>(BuildContext context, Widget page) {
+    return Navigator.push(
+      context,
+      _route(
+        page: page,
+        transition: (_, animation, __, child) {
+          return ScaleTransition(scale: animation, child: child);
+        },
+      ),
+    );
+  }
+
+  static void popTimes(BuildContext context, int count) {
+    int current = 0;
+
+    Navigator.popUntil(context, (_) => current++ == count);
+  }
+
+  static Future<T?> pushWithoutContext<T>(Widget page) {
+    return _navigator!.push<T>(MaterialPageRoute(builder: (_) => page));
+  }
+
+  static void popWithoutContext<T>([T? result]) {
+    _navigator?.pop(result);
+  }
+
+  static Future<T?> replaceAll<T>(BuildContext context, Widget page) {
+    return Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => page),
+      (_) => false,
+    );
+  }
 
   /// Push a new page.
   static Future<T?> push<T>(BuildContext context, Widget page) {
