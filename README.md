@@ -1,87 +1,70 @@
-# Pro Navigator
+# Pro Loader
 
-A lightweight and easy-to-use Flutter navigation helper package that simplifies navigation using clean and reusable methods.
+A lightweight Flutter loader package with 50 built-in animated loader styles,
+overlay loading, and loading button support.
 
 ## Features
 
-* Push a new screen
-* Push replacement
-* Push and remove all previous routes
-* Push named routes
-* Push replacement named routes
-* Pop current route
-* Pop until first route
-* Pop until a named route
-* Check if a route can be popped
-* Maybe pop current route
+* 50 loader types through `ProLoaderType`
+* Pure Flutter implementation
+* Custom color, size, stroke width, and duration
+* Global overlay loader
+* Loading button widget
 
 ## Installation
 
-Add the package to your `pubspec.yaml`.
-
 ```yaml
 dependencies:
-  pro_navigator: ^0.0.1
-```
-
-Then run:
-
-```bash
-flutter pub get
+  pro_loader: ^0.0.1
 ```
 
 ## Usage
 
-Import the package:
-
 ```dart
-import 'package:pro_navigator/pro_navigator.dart';
+import 'package:pro_loader/pro_loader.dart';
 ```
 
-Push a screen:
+Basic loader:
 
 ```dart
-ProNavigator.push(
+const ProLoader(
+  type: ProLoaderType.wave,
+  size: 48,
+  color: Colors.blue,
+)
+```
+
+Overlay loader:
+
+```dart
+ProLoaderOverlay.show(
   context,
-  const HomeScreen(),
+  type: ProLoaderType.dualRing,
 );
+
+ProLoaderOverlay.hide();
 ```
 
-Replace a screen:
+Loading button:
 
 ```dart
-ProNavigator.pushReplacement(
-  context,
-  const LoginScreen(),
-);
+ProLoadingButton(
+  isLoading: isSubmitting,
+  onPressed: submit,
+  child: const Text('Submit'),
+)
 ```
 
-Pop a screen:
+## Loader Types
 
-```dart
-ProNavigator.pop(context);
-```
-
-Push a named route:
-
-```dart
-ProNavigator.pushNamed(
-  context,
-  '/home',
-);
-```
-
-Remove all previous routes:
-
-```dart
-ProNavigator.pushAndRemoveUntil(
-  context,
-  const DashboardScreen(),
-);
-```
-
-## Additional Information
-
-This package is designed to make Flutter navigation cleaner and more readable by reducing repetitive `Navigator` code.
-
-Contributions, feature requests, and bug reports are welcome.
+`circleSpin`, `dualRing`, `threeBounce`, `wave`, `pulse`, `fadingCircle`,
+`rotatingDots`, `chasingDots`, `cubeGrid`, `foldingCube`, `hourGlass`,
+`typingDots`, `linearDots`, `bars`, `equalizer`, `ripple`, `orbit`, `planet`,
+`radar`, `wifi`, `heartBeat`, `infinity`, `spinnerLines`, `rotatingSquare`,
+`flippingSquare`, `scalingCircle`, `elasticCircle`, `doubleBounce`,
+`tripleRing`, `progressRing`, `liquidFill`, `shimmerLine`, `shimmerCard`,
+`skeletonList`, `skeletonProfile`, `skeletonGrid`, `buttonLoader`,
+`fullscreenLoader`, `dialogLoader`, `overlayLoader`, `uploadLoader`,
+`downloadLoader`, `percentageLoader`, `stepLoader`, `routeLoader`,
+`pageLoader`, `imageLoader`, `searchLoader`, `paymentLoader`,
+`successTransitionLoader`.

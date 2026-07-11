@@ -1,8 +1,8 @@
-name: pro_navigator
-description: A simple and powerful Flutter navigation helper package.
-version: 0.0.3
+name: pro_loader
+description: A lightweight Flutter loader package with 50 animated loader styles.
+version: 0.0.4
 
-homepage: https://github.com/hello-saif/navigator_pak
+homepage: https://github.com/hello-saif/pro_loader
 
 
 environment:
@@ -22,8 +22,9 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 topics:
   - flutter
-  - navigation
-  - navigator
+  - loader
+  - loading
+  - progress
 # The following section is specific to Flutter packages.
 flutter:
 
