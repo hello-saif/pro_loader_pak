@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 ///
 /// Example:
 /// ```dart
-/// ImproNavigator.push(
+/// ProNavigator.push(
 ///   context,
 ///   const HomeScreen(),
 /// );
 /// ```
-final class ImproNavigator {
-  const ImproNavigator._();
+final class ProNavigator {
+  const ProNavigator._();
 
   /// Push a new page.
   static Future<T?> push<T>(BuildContext context, Widget page) {
