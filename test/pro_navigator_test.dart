@@ -1,33 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:pro_navigator/pro_navigator.dart';
 
 void main() {
-  testWidgets('push opens the provided page', (tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(home: Builder(builder: _HomePage.new)),
-    );
+  testWidgets('ProNavigator.push opens the provided page', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const MaterialApp(home: HomePage()));
+
+    expect(find.text('Open'), findsOneWidget);
 
     await tester.tap(find.text('Open'));
     await tester.pumpAndSettle();
 
     expect(find.text('Details'), findsOneWidget);
   });
+
+  testWidgets('ProNavigator.pop returns to previous page', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const MaterialApp(home: HomePage()));
+
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Details'), findsOneWidget);
+
+    await tester.tap(find.text('Back'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Open'), findsOneWidget);
+  });
 }
 
-class _HomePage extends StatelessWidget {
-  const _HomePage(this.context);
-
-  final BuildContext context;
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        ProNavigator.push(context, const Scaffold(body: Text('Details')));
-      },
-      child: const Text('Open'),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Home')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            ProNavigator.push(context, const DetailsPage());
+          },
+          child: const Text('Open'),
+        ),
+      ),
+    );
+  }
+}
+
+class DetailsPage extends StatelessWidget {
+  const DetailsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Details')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            ProNavigator.pop(context);
+          },
+          child: const Text('Back'),
+        ),
+      ),
     );
   }
 }
