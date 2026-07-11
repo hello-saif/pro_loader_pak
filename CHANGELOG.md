@@ -2,10 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## 0.0.3
+## 0.0.4
 
-* Initial public release.
-* Added navigation helper methods.
-* Added push, pop, pushReplacement, and pushNamed support.
-* Added pushAndRemoveUntil and popUntil helper methods.
-* Improved documentation and package structure.
+* Initial loader package release.
+* Added `ProLoader` with 50 loader types.
+* Added `ProLoaderOverlay` for global loading overlays.
+* Added `ProLoadingButton` for loading button states.
