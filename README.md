@@ -1,39 +1,87 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Pro Navigator
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A lightweight and easy-to-use Flutter navigation helper package that simplifies navigation using clean and reusable methods.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+* Push a new screen
+* Push replacement
+* Push and remove all previous routes
+* Push named routes
+* Push replacement named routes
+* Pop current route
+* Pop until first route
+* Pop until a named route
+* Check if a route can be popped
+* Maybe pop current route
 
-## Getting started
+## Installation
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add the package to your `pubspec.yaml`.
+
+```yaml
+dependencies:
+  pro_navigator: ^0.0.1
+```
+
+Then run:
+
+```bash
+flutter pub get
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+Import the package:
 
 ```dart
-const like = 'sample';
+import 'package:pro_navigator/pro_navigator.dart';
 ```
 
-## Additional information
+Push a screen:
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```dart
+ProNavigator.push(
+  context,
+  const HomeScreen(),
+);
+```
+
+Replace a screen:
+
+```dart
+ProNavigator.pushReplacement(
+  context,
+  const LoginScreen(),
+);
+```
+
+Pop a screen:
+
+```dart
+ProNavigator.pop(context);
+```
+
+Push a named route:
+
+```dart
+ProNavigator.pushNamed(
+  context,
+  '/home',
+);
+```
+
+Remove all previous routes:
+
+```dart
+ProNavigator.pushAndRemoveUntil(
+  context,
+  const DashboardScreen(),
+);
+```
+
+## Additional Information
+
+This package is designed to make Flutter navigation cleaner and more readable by reducing repetitive `Navigator` code.
+
+Contributions, feature requests, and bug reports are welcome.
