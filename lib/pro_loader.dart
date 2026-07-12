@@ -53,6 +53,7 @@ enum ProLoaderType {
   searchLoader,
   paymentLoader,
   successTransitionLoader,
+  hexagonSpin,
 }
 
 class ProLoader extends StatefulWidget {
@@ -352,6 +353,8 @@ class _ProLoaderPainter extends CustomPainter {
         _payment(canvas, size);
       case ProLoaderType.successTransitionLoader:
         _success(canvas, size);
+      case ProLoaderType.hexagonSpin:
+        _hexagonSpin(canvas, size);
     }
 
     return true;
@@ -889,6 +892,38 @@ class _ProLoaderPainter extends CustomPainter {
       ..lineTo(center.dx - size.width * .04, center.dy + size.height * .15)
       ..lineTo(center.dx + size.width * .22, center.dy - size.height * .18);
     canvas.drawPath(path, _paint);
+  }
+
+  void _hexagonSpin(Canvas canvas, Size size) {
+    final center = _center(size);
+
+    canvas.save();
+
+    canvas.translate(center.dx, center.dy);
+
+    canvas.rotate(progress * math.pi * 2);
+
+    final path = Path();
+
+    final radius = size.shortestSide * .35;
+
+    for (int i = 0; i < 6; i++) {
+      final angle = (math.pi / 3) * i;
+
+      final point = Offset(math.cos(angle) * radius, math.sin(angle) * radius);
+
+      if (i == 0) {
+        path.moveTo(point.dx, point.dy);
+      } else {
+        path.lineTo(point.dx, point.dy);
+      }
+    }
+
+    path.close();
+
+    canvas.drawPath(path, _paint);
+
+    canvas.restore();
   }
 
   @override
