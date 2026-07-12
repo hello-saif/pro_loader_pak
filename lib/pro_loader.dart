@@ -56,6 +56,9 @@ enum ProLoaderType {
   hexagonSpin,
   apple,
   googleMaterial,
+  liquidSpinner,
+  dnaLoader,
+  orbitAtom,
 }
 
 class ProLoader extends StatefulWidget {
@@ -361,6 +364,12 @@ class _ProLoaderPainter extends CustomPainter {
         apple(canvas, size);
       case ProLoaderType.googleMaterial:
         _googleMaterial(canvas, size);
+      case ProLoaderType.liquidSpinner:
+        _liquidSpinner(canvas, size);
+      case ProLoaderType.dnaLoader:
+        _dnaLoader(canvas, size);
+      case ProLoaderType.orbitAtom:
+        _orbitAtom(canvas, size);
     }
 
     return true;
@@ -988,6 +997,147 @@ class _ProLoaderPainter extends CustomPainter {
         2;
 
     canvas.drawArc(rect, rotation - math.pi / 2, sweep, false, paint);
+  }
+
+  void _liquidSpinner(Canvas canvas, Size size) {
+    final center = _center(size);
+    final radius = size.shortestSide * .42;
+    canvas.drawCircle(
+      center,
+      radius,
+      Paint()
+        ..color = secondaryColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth,
+    );
+
+    canvas.save();
+    canvas.clipPath(
+      Path()..addOval(Rect.fromCircle(center: center, radius: radius)),
+    );
+
+    final level = .55 + math.sin(progress * math.pi * 2) * .08;
+
+    final waveHeight = size.height * .05;
+
+    final path = Path();
+
+    final top = size.height * level;
+
+    path.moveTo(0, top);
+
+    for (double x = 0; x <= size.width; x++) {
+      final y =
+          top +
+          math.sin((x / size.width) * math.pi * 2 + progress * math.pi * 4) *
+              waveHeight;
+
+      path.lineTo(x, y);
+    }
+
+    path
+      ..lineTo(size.width, size.height)
+      ..lineTo(0, size.height)
+      ..close();
+
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = color
+        ..style = PaintingStyle.fill,
+    );
+
+    canvas.restore();
+    final angle = progress * math.pi * 2;
+
+    final bubble = Offset(
+      center.dx + math.cos(angle) * radius * .55,
+      center.dy + math.sin(angle) * radius * .55,
+    );
+
+    canvas.drawCircle(
+      bubble,
+      size.shortestSide * .06,
+      Paint()
+        ..color = Colors.white.withValues(alpha: .7)
+        ..style = PaintingStyle.fill,
+    );
+  }
+
+  void _dnaLoader(Canvas canvas, Size size) {
+    final paint = Paint()..style = PaintingStyle.fill;
+
+    final linePaint = Paint()
+      ..color = secondaryColor
+      ..strokeWidth = strokeWidth * .6
+      ..strokeCap = StrokeCap.round;
+
+    const count = 12;
+
+    final spacing = size.height / (count - 1);
+
+    final amplitude = size.width * .22;
+
+    for (int i = 0; i < count; i++) {
+      final t = i / (count - 1);
+
+      final angle = progress * math.pi * 2 + t * math.pi * 2;
+
+      final x1 = size.width / 2 + math.sin(angle) * amplitude;
+
+      final x2 = size.width / 2 - math.sin(angle) * amplitude;
+
+      final y = spacing * i;
+      canvas.drawLine(Offset(x1, y), Offset(x2, y), linePaint);
+
+      final alpha = (.4 + .6 * math.cos(angle).abs()).clamp(.0, 1.0);
+      paint.color = color.withValues(alpha: alpha);
+
+      canvas.drawCircle(Offset(x1, y), size.shortestSide * .045, paint);
+      paint.color = color.withValues(alpha: 1 - alpha * .35);
+
+      canvas.drawCircle(Offset(x2, y), size.shortestSide * .045, paint);
+    }
+  }
+
+  void _orbitAtom(Canvas canvas, Size size) {
+    final center = _center(size);
+    final radius = size.shortestSide * .33;
+
+    final orbitPaint = Paint()
+      ..color = secondaryColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth * .7;
+
+    final electronPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(center, size.shortestSide * .07, electronPaint);
+
+    for (int i = 0; i < 3; i++) {
+      canvas.save();
+
+      canvas.translate(center.dx, center.dy);
+      canvas.rotate(i * math.pi / 3);
+      canvas.rotate(progress * math.pi * 2);
+
+      final rect = Rect.fromCenter(
+        center: Offset.zero,
+        width: radius * 2,
+        height: radius * .9,
+      );
+      canvas.drawOval(rect, orbitPaint);
+      final angle = progress * math.pi * 2 + i * math.pi * .8;
+
+      final electron = Offset(
+        math.cos(angle) * radius,
+        math.sin(angle) * radius * .45,
+      );
+
+      canvas.drawCircle(electron, size.shortestSide * .045, electronPaint);
+
+      canvas.restore();
+    }
   }
 
   @override
