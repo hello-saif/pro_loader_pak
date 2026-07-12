@@ -61,11 +61,16 @@ ProLoadingButton(
 <tr>
 <td width="90">
 
-<img
+<!-- <img
   src="https://raw.githubusercontent.com/hello-saif/pro_loader_pak/main/assets/image/author.jpeg"
   width="80"
   style="border-radius:50%;"
   class="rounded-full object-cover"
+/> -->
+<img
+  src="https://raw.githubusercontent.com/hello-saif/pro_loader_pak/main/assets/image/author.jpeg"
+  width="80"
+  style="border-radius:50%; object-fit:cover;"
 />
 <td>
 
