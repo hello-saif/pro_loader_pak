@@ -61,8 +61,7 @@ ProLoadingButton(
 <tr>
 <td width="90">
 
-<img src="https://raw.githubusercontent.com/hello-saif/pro_loader/main/assets/image/author.jpeg" width="80"/>
-
+<img src="assets/image/author.jpeg" width="80" />
 </td>
 
 <td>
