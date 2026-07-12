@@ -61,7 +61,11 @@ ProLoadingButton(
 <tr>
 <td width="90">
 
-<img src="https://raw.githubusercontent.com/hello-saif/pro_loader_pak/main/assets/image/author.jpeg" width="80" />
+<img
+  src="https://raw.githubusercontent.com/hello-saif/pro_loader_pak/main/assets/image/author.jpeg"
+  width="80"
+  style="border-radius:50%;"
+/>
 <td>
 
 ### Saifuddin Nobab
