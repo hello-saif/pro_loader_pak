@@ -1,8 +1,8 @@
 name: pro_loader
 description: A lightweight Flutter loader package with 50 animated loader styles.
-version: 0.0.11
+version: 0.0.12
 
-homepage: https://github.com/hello-saif/pro_loader
+homepage: https://github.com/hello-saif/pro_loader_pak
 
 
 environment:
