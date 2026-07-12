@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## 0.0.6
+## 0.0.7
 
 * Initial loader package release.
 * Added `ProLoader` with 50 loader types.
