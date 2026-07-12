@@ -73,7 +73,7 @@ Flutter Developer
 
 🌐 GitHub: https://github.com/hello-saif
 
-💼 LinkedIn: https://linkedin.com/in/Saifuddin_Nobab
+💼 LinkedIn: https://linkedin.com/in/saifuddin-nobab
 
 📧 Email: mdsaifuddinnobab5@email.com
 
