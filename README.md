@@ -55,6 +55,32 @@ ProLoadingButton(
 )
 ```
 
+## Author
+
+<table>
+<tr>
+<td width="90">
+
+<img src="https://raw.githubusercontent.com/hello-saif/pro_loader/main/assets/image/author.jpeg" width="80"/>
+
+</td>
+
+<td>
+
+### Saifuddin Nobab
+
+Flutter Developer
+
+🌐 GitHub: https://github.com/hello-saif
+
+💼 LinkedIn: https://linkedin.com/in/Saifuddin_Nobab
+
+📧 Email: mdsaifuddinnobab5@email.com
+
+</td>
+</tr>
+</table>
+
 ## Loader Types
 
 `circleSpin`, `dualRing`, `threeBounce`, `wave`, `pulse`, `fadingCircle`,
