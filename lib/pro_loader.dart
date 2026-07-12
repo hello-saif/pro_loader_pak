@@ -2,7 +2,13 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:pro_loader/src/enum/pro_loader_type.dart';
 
+/// A customizable animated loader widget.
+///
+/// Supports multiple built-in loader animations through [ProLoaderType].
+/// You can customize the color, size, stroke width, animation duration,
+/// or provide a fixed progress value.
 class ProLoader extends StatefulWidget {
+  /// Creates a [ProLoader].
   const ProLoader({
     super.key,
     this.type = ProLoaderType.circleSpin,
@@ -81,7 +87,10 @@ class _ProLoaderState extends State<ProLoader>
   }
 }
 
+/// An [ElevatedButton] that automatically displays
+/// a loading animation while an operation is running.
 class ProLoadingButton extends StatelessWidget {
+  /// Creates a loading button.
   const ProLoadingButton({
     super.key,
     required this.isLoading,
@@ -92,11 +101,22 @@ class ProLoadingButton extends StatelessWidget {
     this.loaderSize = 22,
   });
 
+  /// Whether the loader should be displayed.
   final bool isLoading;
+
+  /// Called when the button is pressed.
   final VoidCallback? onPressed;
+
+  /// Button content displayed when not loading.
   final Widget child;
+
+  /// Loader animation used while loading.
   final ProLoaderType loaderType;
+
+  /// Color of the loader.
   final Color? loaderColor;
+
+  /// Size of the loader.
   final double loaderSize;
 
   @override
@@ -118,13 +138,24 @@ class ProLoadingButton extends StatelessWidget {
   }
 }
 
+/// Displays a fullscreen loading overlay.
+///
+/// Call [show] to display the overlay and
+/// [hide] to remove it.
 class ProLoaderOverlay {
+  /// Prevents creating instances of this class.
   const ProLoaderOverlay._();
 
   static OverlayEntry? _entry;
 
+  /// Returns whether the loading overlay is currently visible.
   static bool get isShowing => _entry != null;
 
+  /// Shows a fullscreen loading overlay.
+  ///
+  /// The overlay blocks user interaction until [hide]
+  /// is called or the barrier is tapped when
+  /// [dismissible] is true.
   static void show(
     BuildContext context, {
     ProLoaderType type = ProLoaderType.overlayLoader,
@@ -156,6 +187,7 @@ class ProLoaderOverlay {
     Overlay.of(context).insert(_entry!);
   }
 
+  /// Removes the currently visible loading overlay.
   static void hide() {
     _entry?.remove();
     _entry = null;

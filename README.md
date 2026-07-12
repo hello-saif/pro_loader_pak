@@ -65,6 +65,7 @@ ProLoadingButton(
   src="https://raw.githubusercontent.com/hello-saif/pro_loader_pak/main/assets/image/author.jpeg"
   width="80"
   style="border-radius:50%;"
+  class="rounded-full object-cover"
 />
 <td>
 
