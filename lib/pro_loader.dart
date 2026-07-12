@@ -54,6 +54,8 @@ enum ProLoaderType {
   paymentLoader,
   successTransitionLoader,
   hexagonSpin,
+  apple,
+  googleMaterial,
 }
 
 class ProLoader extends StatefulWidget {
@@ -355,6 +357,10 @@ class _ProLoaderPainter extends CustomPainter {
         _success(canvas, size);
       case ProLoaderType.hexagonSpin:
         _hexagonSpin(canvas, size);
+      case ProLoaderType.apple:
+        apple(canvas, size);
+      case ProLoaderType.googleMaterial:
+        _googleMaterial(canvas, size);
     }
 
     return true;
@@ -924,6 +930,64 @@ class _ProLoaderPainter extends CustomPainter {
     canvas.drawPath(path, _paint);
 
     canvas.restore();
+  }
+
+  void apple(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+
+    final radius = size.shortestSide * .34;
+
+    for (int i = 0; i < 12; i++) {
+      final angle = (math.pi * 2 / 12) * i;
+
+      final opacity = ((i + progress * 12) % 12) / 12;
+
+      final paint = Paint()
+        ..color = color.withValues(alpha: opacity)
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = strokeWidth;
+
+      final start = Offset(
+        center.dx + math.cos(angle) * radius * .55,
+        center.dy + math.sin(angle) * radius * .55,
+      );
+
+      final end = Offset(
+        center.dx + math.cos(angle) * radius,
+        center.dy + math.sin(angle) * radius,
+      );
+
+      canvas.drawLine(start, end, paint);
+    }
+  }
+
+  void _googleMaterial(Canvas canvas, Size size) {
+    final rect = (Offset.zero & size).deflate(strokeWidth);
+
+    // Background circle
+    canvas.drawCircle(
+      _center(size),
+      size.shortestSide / 2 - strokeWidth,
+      Paint()
+        ..color = secondaryColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth,
+    );
+
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
+
+    final rotation = progress * math.pi * 2;
+
+    final sweep =
+        (0.25 + 0.55 * math.sin(progress * math.pi)).clamp(0.15, 0.85) *
+        math.pi *
+        2;
+
+    canvas.drawArc(rect, rotation - math.pi / 2, sweep, false, paint);
   }
 
   @override

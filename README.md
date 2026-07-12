@@ -15,7 +15,7 @@ overlay loading, and loading button support.
 
 ```yaml
 dependencies:
-  pro_loader: ^0.0.1
+  pro_loader: ^0.0.4
 ```
 
 ## Usage
