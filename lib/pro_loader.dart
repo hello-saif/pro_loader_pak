@@ -343,6 +343,16 @@ class _ProLoaderPainter extends CustomPainter {
         _dnaLoader(canvas, size);
       case ProLoaderType.orbitAtom:
         _orbitAtom(canvas, size);
+      case ProLoaderType.infinityCube:
+        _infinityCube(canvas, size);
+      case ProLoaderType.neonRing:
+        _neonRing(canvas, size);
+      case ProLoaderType.morphingBlob:
+        _morphingBlob(canvas, size);
+      case ProLoaderType.galaxyLoader:
+        _galaxyLoader(canvas, size);
+      case ProLoaderType.clockLoader:
+        _clockLoader(canvas, size);
     }
 
     return true;
@@ -1111,6 +1121,401 @@ class _ProLoaderPainter extends CustomPainter {
 
       canvas.restore();
     }
+  }
+
+  void _infinityCube(Canvas canvas, Size size) {
+    final center = _center(size);
+    final ampX = size.width * .38;
+    final ampY = size.height * .22;
+
+    const cubeCount = 5;
+
+    for (var i = 0; i < cubeCount; i++) {
+      // Stagger each cube along the loop
+      final t = (progress + i / cubeCount) % 1;
+      final angle = t * math.pi * 2;
+
+      // Lemniscate (figure-8 / infinity) path
+      final denom = 1 + math.pow(math.sin(angle), 2);
+      final x = center.dx + (ampX * math.cos(angle)) / denom;
+      final y = center.dy + (ampY * math.sin(angle) * math.cos(angle)) / denom;
+
+      // Depth illusion: cube scales & fades as it goes "into" the loop
+      final depth = (math.sin(angle) + 1) / 2; // 0..1
+      final scale = .45 + .55 * depth;
+      final opacity = .35 + .65 * depth;
+      final cubeSize = size.shortestSide * .16 * scale;
+
+      canvas.save();
+      canvas.translate(x, y);
+      canvas.rotate(progress * math.pi * 2 + i);
+
+      final rect = Rect.fromCenter(
+        center: Offset.zero,
+        width: cubeSize,
+        height: cubeSize,
+      );
+
+      // Cube fill
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(rect, Radius.circular(cubeSize * .18)),
+        Paint()
+          ..color = color.withValues(alpha: opacity)
+          ..style = PaintingStyle.fill,
+      );
+
+      // Subtle top-face highlight for a 3D feel
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          rect.deflate(cubeSize * .18),
+          Radius.circular(cubeSize * .12),
+        ),
+        Paint()
+          ..color = Colors.white.withValues(alpha: opacity * .3)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeWidth * .4,
+      );
+
+      canvas.restore();
+    }
+
+    // Faint infinity-path guide line
+    final path = Path();
+    for (var i = 0; i <= 120; i++) {
+      final angle = (i / 120) * math.pi * 2;
+      final denom = 1 + math.pow(math.sin(angle), 2);
+      final x = center.dx + (ampX * math.cos(angle)) / denom;
+      final y = center.dy + (ampY * math.sin(angle) * math.cos(angle)) / denom;
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = secondaryColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth * .5,
+    );
+  }
+
+  void _neonRing(Canvas canvas, Size size) {
+    final center = _center(size);
+    final radius = size.shortestSide / 2 - strokeWidth * 1.5;
+    final rect = Rect.fromCircle(center: center, radius: radius);
+
+    // Dim background track
+    canvas.drawCircle(
+      center,
+      radius,
+      Paint()
+        ..color = secondaryColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth,
+    );
+
+    final sweep = math.pi * 1.35;
+    final start = progress * math.pi * 2;
+
+    // Outer soft glow layers (blurred, wide, faint)
+    for (var i = 3; i >= 1; i--) {
+      canvas.drawArc(
+        rect,
+        start,
+        sweep,
+        false,
+        Paint()
+          ..color = color.withValues(alpha: .12 * i)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeWidth * (1 + i * 1.6)
+          ..strokeCap = StrokeCap.round
+          ..maskFilter = MaskFilter.blur(
+            BlurStyle.normal,
+            strokeWidth * i.toDouble(),
+          ),
+      );
+    }
+
+    // Crisp bright core line on top
+    canvas.drawArc(
+      rect,
+      start,
+      sweep,
+      false,
+      Paint()
+        ..color = Colors.white.withValues(alpha: .9)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth * .45
+        ..strokeCap = StrokeCap.round,
+    );
+
+    canvas.drawArc(
+      rect,
+      start,
+      sweep,
+      false,
+      Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth * .75
+        ..strokeCap = StrokeCap.round,
+    );
+
+    // Bright leading tip (extra glow blob at the head of the arc)
+    final tipAngle = start + sweep;
+    final tip = Offset(
+      center.dx + math.cos(tipAngle) * radius,
+      center.dy + math.sin(tipAngle) * radius,
+    );
+
+    canvas.drawCircle(
+      tip,
+      strokeWidth * 1.1,
+      Paint()
+        ..color = color.withValues(alpha: .5)
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, strokeWidth * 1.5),
+    );
+
+    canvas.drawCircle(tip, strokeWidth * .5, Paint()..color = Colors.white);
+  }
+
+  void _morphingBlob(Canvas canvas, Size size) {
+    final center = _center(size);
+    final baseRadius = size.shortestSide * .32;
+
+    const points = 8;
+    const noiseWaves = 3; // number of overlapping sine frequencies
+
+    final path = Path();
+    final offsets = <Offset>[];
+
+    for (var i = 0; i <= points; i++) {
+      final angle = (i % points) / points * math.pi * 2;
+
+      // Combine a few sine waves at different frequencies/phases
+      // so the blob edge feels organic instead of a simple pulse.
+      var radiusOffset = 0.0;
+      for (var w = 1; w <= noiseWaves; w++) {
+        radiusOffset +=
+            math.sin(
+              angle * w * 2 + progress * math.pi * 2 * (w.isEven ? -1 : 1),
+            ) /
+            w;
+      }
+
+      final radius = baseRadius + radiusOffset * baseRadius * .16;
+      offsets.add(
+        Offset(
+          center.dx + math.cos(angle) * radius,
+          center.dy + math.sin(angle) * radius,
+        ),
+      );
+    }
+
+    // Smooth the polygon into a blob using quadratic bezier
+    // through the midpoints of each edge.
+    path.moveTo(
+      (offsets[0].dx + offsets[points - 1].dx) / 2,
+      (offsets[0].dy + offsets[points - 1].dy) / 2,
+    );
+
+    for (var i = 0; i < points; i++) {
+      final next = offsets[(i + 1) % points];
+      final mid = Offset(
+        (offsets[i].dx + next.dx) / 2,
+        (offsets[i].dy + next.dy) / 2,
+      );
+      path.quadraticBezierTo(offsets[i].dx, offsets[i].dy, mid.dx, mid.dy);
+    }
+
+    path.close();
+
+    // Soft glow underneath
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = color.withValues(alpha: .25)
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, strokeWidth * 2),
+    );
+
+    // Filled blob body with a subtle radial-style highlight
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = color.withValues(alpha: .85)
+        ..style = PaintingStyle.fill,
+    );
+
+    // Bright inner core to add depth
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+    canvas.scale(.45);
+    canvas.translate(-center.dx, -center.dy);
+    canvas.drawPath(path, Paint()..color = Colors.white.withValues(alpha: .18));
+    canvas.restore();
+  }
+
+  void _galaxyLoader(Canvas canvas, Size size) {
+    final center = _center(size);
+    final maxRadius = size.shortestSide * .46;
+
+    const arms = 2;
+    const starsPerArm = 14;
+    const turns = 1.6; // how many rotations each spiral arm makes
+
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+    canvas.rotate(progress * math.pi * 2);
+    canvas.translate(-center.dx, -center.dy);
+
+    // Spiral arms as faint stroked paths
+    for (var a = 0; a < arms; a++) {
+      final armOffset = a * math.pi * 2 / arms;
+      final path = Path();
+
+      for (var i = 0; i <= 60; i++) {
+        final t = i / 60;
+        final angle = armOffset + t * math.pi * 2 * turns;
+        final radius = t * maxRadius;
+        final x = center.dx + math.cos(angle) * radius;
+        final y = center.dy + math.sin(angle) * radius;
+
+        if (i == 0) {
+          path.moveTo(x, y);
+        } else {
+          path.lineTo(x, y);
+        }
+      }
+
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = color.withValues(alpha: .18)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeWidth * .5,
+      );
+    }
+
+    // Stars scattered along each arm, twinkling via phase-based opacity
+    for (var a = 0; a < arms; a++) {
+      final armOffset = a * math.pi * 2 / arms;
+
+      for (var s = 0; s < starsPerArm; s++) {
+        final t = (s + 1) / (starsPerArm + 1);
+        final angle = armOffset + t * math.pi * 2 * turns;
+        final radius = t * maxRadius;
+        final x = center.dx + math.cos(angle) * radius;
+        final y = center.dy + math.sin(angle) * radius;
+
+        // twinkle: each star fades in/out on its own phase
+        final twinkle =
+            (math.sin(progress * math.pi * 2 * 3 + s * 1.7 + a * 2.3) + 1) / 2;
+        final opacity = (.35 + .65 * twinkle) * (1 - t * .4);
+        final starSize = size.shortestSide * .012 * (1 - t * .3 + .3);
+
+        canvas.drawCircle(
+          Offset(x, y),
+          starSize,
+          Paint()..color = color.withValues(alpha: opacity.clamp(0.0, 1.0)),
+        );
+      }
+    }
+
+    canvas.restore();
+
+    // Glowing core (not rotated, stays centered and pulses gently)
+    final corePulse = .85 + .15 * math.sin(progress * math.pi * 2 * 2);
+    final coreRadius = size.shortestSide * .1 * corePulse;
+
+    canvas.drawCircle(
+      center,
+      coreRadius * 2.2,
+      Paint()
+        ..color = color.withValues(alpha: .25)
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, coreRadius * .9),
+    );
+
+    canvas.drawCircle(center, coreRadius, Paint()..color = color);
+
+    canvas.drawCircle(
+      center,
+      coreRadius * .45,
+      Paint()..color = Colors.white.withValues(alpha: .85),
+    );
+  }
+
+  void _clockLoader(Canvas canvas, Size size) {
+    final center = _center(size);
+    final radius = size.shortestSide / 2 - strokeWidth;
+
+    // Clock face outline
+    canvas.drawCircle(
+      center,
+      radius,
+      Paint()
+        ..color = secondaryColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth,
+    );
+
+    // Hour tick marks
+    for (var i = 0; i < 12; i++) {
+      final angle = i * math.pi / 6;
+      final isMajor = i % 3 == 0;
+      final outer = Offset(
+        center.dx + math.cos(angle) * radius,
+        center.dy + math.sin(angle) * radius,
+      );
+      final inner = Offset(
+        center.dx + math.cos(angle) * radius * (isMajor ? .78 : .86),
+        center.dy + math.sin(angle) * radius * (isMajor ? .78 : .86),
+      );
+      canvas.drawLine(
+        inner,
+        outer,
+        Paint()
+          ..color = color.withValues(alpha: isMajor ? .8 : .4)
+          ..strokeWidth = strokeWidth * (isMajor ? .5 : .3)
+          ..strokeCap = StrokeCap.round,
+      );
+    }
+
+    // Hands sweep continuously based on progress (progress = one full "hour" cycle)
+    // Second hand: fastest, full spin per cycle
+    final secondAngle = progress * math.pi * 2 - math.pi / 2;
+    // Minute hand: slower, completes 1 turn per 12 "seconds" of progress
+    final minuteAngle = (progress / 12) * math.pi * 2 - math.pi / 2;
+    // Hour hand: slowest
+    final hourAngle = (progress / 48) * math.pi * 2 - math.pi / 2;
+
+    void drawHand(double angle, double lengthFactor, double width, Color c) {
+      final end = Offset(
+        center.dx + math.cos(angle) * radius * lengthFactor,
+        center.dy + math.sin(angle) * radius * lengthFactor,
+      );
+      canvas.drawLine(
+        center,
+        end,
+        Paint()
+          ..color = c
+          ..strokeWidth = width
+          ..strokeCap = StrokeCap.round,
+      );
+    }
+
+    drawHand(hourAngle, .5, strokeWidth * .9, color);
+    drawHand(minuteAngle, .7, strokeWidth * .65, color);
+    drawHand(secondAngle, .82, strokeWidth * .3, color.withValues(alpha: .85));
+
+    // Center pin
+    canvas.drawCircle(center, strokeWidth * .55, Paint()..color = color);
+    canvas.drawCircle(
+      center,
+      strokeWidth * .22,
+      Paint()..color = Colors.white.withValues(alpha: .9),
+    );
   }
 
   @override
