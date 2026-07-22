@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pro_loader/pro_loader.dart';
 import 'package:pro_loader/src/enum/pro_loader_type.dart';
+import 'package:pro_loader/widget/pro_loading_button.dart';
 
 void main() {
   test('ProLoaderType has 50 loaders', () {
