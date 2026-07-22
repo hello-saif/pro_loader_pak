@@ -5,7 +5,7 @@ overlay loading, and loading button support.
 
 ## Features
 
-* 50 loader types through `ProLoaderType`
+* 55 loader types through `ProLoaderType`
 * Pure Flutter implementation
 * Custom color, size, stroke width, and duration
 * Global overlay loader

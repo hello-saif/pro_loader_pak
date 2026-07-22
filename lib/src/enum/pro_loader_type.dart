@@ -167,4 +167,19 @@ enum ProLoaderType {
 
   /// Atomic orbit animation loader.
   orbitAtom,
+
+  /// Cube traveling along an infinity-loop path.
+  infinityCube,
+
+  /// Glowing neon-style spinning ring.
+  neonRing,
+
+  /// Organic shape that continuously morphs.
+  morphingBlob,
+
+  /// Spiral galaxy with orbiting stars and a glowing core.
+  galaxyLoader,
+
+  /// Analog clock face with sweeping hands.
+  clockLoader,
 }
