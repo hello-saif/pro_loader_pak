@@ -143,10 +143,10 @@ packages:
     dependency: "direct main"
     description:
       name: pro_loader
-      sha256: f9658056bacdef8208deaeb83a69dbe029c415b645e5449710e6d4a578526307
+      sha256: fef6c357ffec7b4199d9f748683dbc8079a94e16e70dfd3b33e8be9e0c121313
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.15"
+    version: "0.0.17"
   sky_engine:
     dependency: transitive
     description: flutter
